@@ -1,0 +1,14 @@
+# PlatformIO build artifacts
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Entorno virtual de Python 
+venv/
+
+# Archivos del sistema y VS Code
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Archivos de imagen generados 
