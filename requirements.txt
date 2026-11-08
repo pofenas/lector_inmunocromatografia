@@ -1,0 +1,5 @@
+//eliminar esta linea y ejecutar pip install -r requirements.txt
+pyserial
+opencv-python
+numpy
+matplotlib
