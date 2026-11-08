@@ -1,0 +1,12 @@
+Contexto del proyecto:
+Estoy desarrollando un prototipo para leer test de inmunocromatografía (LFIA). El sistema consta de una ESP32-CAM que captura imágenes de la placa dentro de una cámara oscura y las envía a un PC (Linux, VS Code, PlatformIO). El PC procesa la imagen (detección de líneas y códigos de barras) y enviará el resultado al SIL del laboratorio (probablemente vía HL7 o ASTM).
+
+Lo que ya hemos resuelto y validado con éxito:
+
+Hardware: Uso una placa ESP32-CAM-MB (con chip CH340). Descubrimos que al abrir el puerto serie en Linux se activan RTS/DTR y meten la placa en modo bootloader. La solución fue abrir el puerto con rts=False, dtr=False (usando pyserial) y leyendo con in_waiting en lugar de bloqueos.
+
+Firmware (PlatformIO): El ESP32 inicializa la cámara, y mediante comunicación serie bidireccional, espera un comando (byte 0x01) desde el PC. Al recibirlo, enciende el LED integrado (GPIO 4), espera 300ms, captura en JPEG, envía la imagen por serie con marcadores de inicio/fin (0xAA 0x55 ... 0x55 0xAA) y apaga el LED.
+
+Visión artificial (PC): Con una imagen de prueba (un dibujo a rotulador), definimos una ROI y validamos con éxito un algoritmo en Python/OpenCV basado en el "perfil de intensidad" (mínimos por fila). Dividiendo la ROI en zona superior (Control) y zona inferior (Test), el algoritmo distingue perfectamente entre un test Positivo (dos rayas detectadas) y un Negativo (solo raya de control), usando un umbral de brillo (ej. 110). Las imágenes se guardan en img/ y el script de Python se ejecuta dentro de un venv.
+
+Estructura física: Diseñaremos una caja vertical sencilla de cartón pluma negro. La cámara irá arriba y la placa descansará en un soporte (atril) inclinado en dos ejes para que la gravedad la posicione en una esquina (tope en L), garantizando que siempre esté en el mismo sitio.
